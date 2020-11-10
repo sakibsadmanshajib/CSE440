@@ -1,1 +1,1 @@
-# Repository for codes from CSE440 - Artifical Intelligence
+# CSE440 - Artifical Intelligence
