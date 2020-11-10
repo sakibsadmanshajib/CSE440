@@ -1,14 +1,21 @@
 import numpy
 
-def printSolution(board, N): 
-	print("--------------------------------------")
-	for i in range(N): 
-		for j in range(N): 
-			print(str(int(board[i][j])), end = " ") 
+solN = 0
+
+def printBoard(board):
+	global solN
+	solN = solN + 1
+	print("--------------------------------------\nPossibility #",solN)
+	for i in range(len(board)): 
+		for j in range(len(board)):
+			if board[i][j] == 1:
+				print("Q", end = " ")
+			else:
+				print("x", end = " ") 
 		print()
 	print("--------------------------------------")
 
-def isSafe(board, row, col, N): 
+def isSafe(board, row, col): 
 
 	for i in range(col): 
 		if board[row][i] == 1: 
@@ -19,48 +26,48 @@ def isSafe(board, row, col, N):
 		if board[i][j] == 1: 
 			return False
 
-	for i, j in zip(range(row, N, 1), 
+	for i, j in zip(range(row, len(board), 1), 
 					range(col, -1, -1)): 
 		if board[i][j] == 1: 
 			return False
 
 	return True
 
-def solveNQUtil(board, col, N): 
+def placeQueen(board, col): 
 
-	if col >= N: 
+	if col >= len(board): 
+		printBoard(board)
 		return True
 
-	for i in range(N):
+	for i in range(len(board)):
 
-		if isSafe(board, i, col, N): 
+		isValid = False
+		for i in range(len(board)):
+			if isSafe(board, i, col): 
 
-			board[i][col] = 1
+				board[i][col] = 1
 
-			if solveNQUtil(board, col + 1, N) == True: 
-				return True
+				isValid = placeQueen(board, col + 1) or isValid
 
-			board[i][col] = 0
+				board[i][col] = 0
+		return False
 
-	return False
-
-def createBoard(N):
-	board = numpy.zeros(shape=(N, N))
-	
-	return board
+def createBoard(N):	
+	return numpy.zeros(shape=(N, N))
 		
-
-def solveNQ(N): 
+def solveNQueen(N): 
 
 	board = createBoard(N)
 
-	if solveNQUtil(board, 0, N) == False: 
-		print ("Solution does not exist") 
-		return False
+	if placeQueen(board, 0) == False: 
+		print("Can't find any solution.") 
+		return board
 
-	printSolution(board, N) 
-	return True
+	return board
 
-n = input("Size of board: ")
+def main():
+	n = input("Size of board: ")
+	solveNQueen(int(n))
 
-solveNQ(int(n))
+if __name__ == '__main__':
+    main()
