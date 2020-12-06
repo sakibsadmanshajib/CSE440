@@ -1,0 +1,8 @@
+create a file that will store the positioln variable og all goat members and tiger members.
+
+handler(
+    tigerpos
+    g1pos
+    g2pos
+    g3pos
+)

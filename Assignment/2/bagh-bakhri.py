@@ -9,11 +9,36 @@ graph = {
     'H': ['F', 'G']
 }
 
+class Handler:
+    tigerPos = ''
+    g1Pos = ''
+    g2Pos = ''
+    g3Pos = ''
+
+    def __init__(self, tp, g1p, g2p, g3p):
+        self.tigerPos = tp
+        self.g1Pos = g1p
+        self.g2Pos = g2p
+        self.g3Pos = g3p
+
+    def setPos(self, objct, pos):
+        if objct.name is 'Tiger':
+            self.tigerPos = pos
+        elif objct.name is 'Goat1':
+            self.g1Pos = pos
+        elif objct.name is 'Goat2':
+            self.g2Pos = pos
+        elif  objct.name is 'Goat3':
+            self.g3Pos = pos
+
+
 class Goat:
+    name = ''
     position = ''
     status = 'Alive'
 
-    def __init__(self, pos):
+    def __init__(self, name, pos):
+        self.name = name
         self.position = pos
 
     def move(self, nextpos):
@@ -32,9 +57,12 @@ class Goat:
         pass
         
 class Tiger:
+    name = ''
     position = ''
+    status = 'Free'
 
-    def __init__(self, pos):
+    def __init__(self, name, pos):
+        self.name = name
         self.position = pos
 
     def move(self, nextpos):
