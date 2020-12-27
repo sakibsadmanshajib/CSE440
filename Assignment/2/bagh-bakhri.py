@@ -81,7 +81,7 @@ class Tiger:
         pass
 
 
-gh1 = Goat('A')
+gh1 = Goat('Goat1', 'A')
 
 gh1.move('D')
 print(gh1.getPosition())
