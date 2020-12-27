@@ -15,21 +15,24 @@ class Handler:
     g2Pos = ''
     g3Pos = ''
 
-    def __init__(self, tp, g1p, g2p, g3p):
-        self.tigerPos = tp
-        self.g1Pos = g1p
-        self.g2Pos = g2p
-        self.g3Pos = g3p
+    def __init__(self, t, g1, g2, g3):
+        self.tigerPos = t.getPosition()
+        self.g1Pos = g1.getPosition()
+        self.g2Pos = g2.getPosition()
+        self.g3Pos = g3.getPosition()
 
-    def setPos(self, objct, pos):
-        if objct.name is 'Tiger':
-            self.tigerPos = pos
-        elif objct.name is 'Goat1':
-            self.g1Pos = pos
-        elif objct.name is 'Goat2':
-            self.g2Pos = pos
-        elif  objct.name is 'Goat3':
-            self.g3Pos = pos
+    # def setPos(self, objct, pos):
+    #     if objct.name is 'Tiger':
+    #          objct.setPosition (self.tigerPos)
+    #     elif objct.name is 'Goat1':
+    #         objct.setPosition(self.g1Pos) 
+    #     elif objct.name is 'Goat2':
+    #         objct.setPosition(self.g2Pos)
+    #     elif  objct.name is 'Goat3':
+    #         objct.setPosition(self.g3Pos)
+    
+
+        
 
 
 class Goat:
@@ -55,6 +58,11 @@ class Goat:
 
     def hasBackup(self):
         pass
+
+    def setPosition(self,pos):
+        self.position=pos
+
+        
         
 class Tiger:
     name = ''
@@ -76,12 +84,21 @@ class Tiger:
 
     def getPosition(self):
         return self.position
+    
+    def setPosition(self,pos):
+        self.position = pos
 
-    def hasBackup(self):
-        pass
 
+class gameDashboard:
+    board = graph
+    tiger= Tiger("Tiger","D")
+    g1 = Goat("Goat1","A")
+    g2 = Goat("Goat2","B")
+    g3 = Goat("Goat3","C")
+    h = Handler(tiger,g1,g2,g3)
+   
+
+    
 
 gh1 = Goat('Goat1', 'A')
 
-gh1.move('D')
-print(gh1.getPosition())
