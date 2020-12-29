@@ -1,6 +1,8 @@
 from enum import Enum
+import functools
+import operator
 
-board = {
+_board = {
     'A0': ['B1', 'C0'],
     'A1': None,
     'A2': ['B1', 'C2', 'B3'],
@@ -83,53 +85,20 @@ class Board(object):
         print(str.format(self.A0, self.A2, self.A4,
                          self.B1, self.B3, self.C0, self.C2, self.C4))
 
-    # def getNeighbour(self, board, current_pos):
-
-    #     if(current_pos=='A0' or 'A2' or 'A4' or 'B1' or 'B3' or 'C0' or 'C2' or 'C3'):
-    #         return board[current_pos]
-
-    #     else:
-    #         print("Invalid Move")
-
-
-# class Handler:
-#     tigerPos = ''
-#     g1Pos = ''
-#     g2Pos = ''
-#     g3Pos = ''
-
-
-#     def __init__(self, t, g1, g2, g3):
-#         self.tigerPos = t.getPosition()
-#         self.g1Pos = g1.getPosition()
-#         self.g2Pos = g2.getPosition()
-#         self.g3Pos = g3.getPosition()
-
-    # def setPos(self, objct, pos):
-    #     if objct.name is 'Tiger':
-    #          objct.setPosition (self.tigerPos)
-    #     elif objct.name is 'Goat1':
-    #         objct.setPosition(self.g1Pos)
-    #     elif objct.name is 'Goat2':
-    #         objct.setPosition(self.g2Pos)
-    #     elif  objct.name is 'Goat3':
-    #         objct.setPosition(self.g3Pos)
-
 class Animal(object):
 
     name = ''
     position = ''
     status = ''
+    animal = ''
 
-    def __init__(self, pos, name, board):
+    def __init__(self, pos, name, board, animal):
         self.name = name
         self.set_position(pos, board)
+        self.animal = animal
 
     def valid_moves(self):
-        possible_moves = board[self.position]
-        for _ in board[self.position]:
-            pass
-        return board[self.position]
+        return _board[self.position]
 
     def get_name(self):
         return self.name
@@ -148,17 +117,11 @@ class Animal(object):
 
 class Goat(Animal):
 
+    def __init__(self, pos, name, board):
+        super().__init__(pos, name, board, 'Goat')
+
     status = 'Alive'
     active = False
-
-    # def move(self, nextpos):
-    #     possibleMoves = graph[self.position]
-    #     if nextpos in possibleMoves:
-    #         self.position = nextpos
-    #         return True
-    #     else:
-    #         print("Not possible.")
-    #         return False
 
     def has_backup(self):
         pass
@@ -172,24 +135,10 @@ class Goat(Animal):
 
 class Tiger(Animal):
 
+    def __init__(self, pos, name, board):
+        super().__init__(pos, name, board, 'Tiger')
+
     status = 'Free'
-
-    # def move(self, nextpos):
-    #     possibleMoves = #graph[self.position]
-    #     if nextpos in possibleMoves:
-    #         self.position = nextpos
-    #         return True
-    #     else:
-    #         print("Not possible.")
-    #         return False
-
-
-# class gameDashboard:
-#     tiger = Tiger("Tiger","D")
-#     g1 = Goat("Goat1","A")
-#     g2 = Goat("Goat2","B")
-#     g3 = Goat("Goat3","C")
-#     h = Handler(tiger,g1,g2,g3)
 
 class Game(object):
 
@@ -201,24 +150,6 @@ class Game(object):
     t = Tiger('B3', 'T', bd)
     bd.show()
 
-    # def goat_move_is_valid(self,next_move):
-    #     if(g1.get_position()==next_move):
-    #         return False
-    #     elif (g2.get_position()==next_move):
-    #         return False
-    #     elif (g3.get_position() == next_move):
-    #         return False
-    #     elif (t.get_position()== next_move):
-    #         return False
-    #     else:
-    #         return True
-
-    # def goat_is_safe(self):
-    #     tiger_pos=t.get_position()
-
-    #     if(p1==g1.get_position):
-
-    #         return True
     def get_animal(self, name):
         if name == 'G1':
             return self.g1
@@ -230,6 +161,29 @@ class Game(object):
             return self.t
         else:
             return None
+
+    def goat_is_safe(self, g):
+        self_animal = self.get_animal(g)
+        f_depth = _board[self_animal.get_position()]
+        s_depth = []
+        for l in f_depth:
+            s_depth.append(_board[l])
+
+        s_depth_flat = functools.reduce(operator.iconcat, s_depth, [])
+
+        self_animal = self.get_animal(g)
+        for y in s_depth_flat:
+            if y == self_animal.get_position():
+                s_depth_flat.remove(y)
+        print(s_depth_flat)
+        if self.g1.get_position() in s_depth_flat:
+            return False
+        if self.g2.get_position() in s_depth_flat:
+            return False
+        if self.g3.get_position() in s_depth_flat:
+            return False
+        else:
+            return True
 
     def show_possible_move(self, an):
         anm = self.get_animal(an)
@@ -246,25 +200,49 @@ class Game(object):
             res.remove(self.g3.get_position())
         if self.t.get_position() in res:
             res.remove(self.t.get_position())
+        if res:
+            print("Possible Moves of " + anm.get_name() + ":")
+            for _ in res:
+                print(str(count) + ": " + _)
+                count += 1
+            print("Please enter a number from above: ")
+            return res[int(input())]
+        else:
+            print("No possible moves for " + anm.get_name() + ".")
+            return None
 
-        for _ in res:
-            print(str(count) + ": " + _)
-            count += 1
-
-        print("Please enter a number from above: ")
-        return res[int(input())]
-    
     def get_board(self):
         return self.bd
 
 
 def main():
-    # bd = Board()
-    # bd.show()
+
     game = Game()
-    
-    game.get_animal('G2').move(game.show_possible_move('G2'), game.get_board())
-    game.get_board().show()
+    while True:
+        
+        print("""
+Enter Animal: 
+1: G1
+2: G2
+3: G3
+4: T
+            """)
+        # print("Enter Number: ")
+        n = int(input("Enter Number: "))
+        if n == 1:
+            x = 'G1'
+        elif n == 2:
+            x = 'G2'
+        elif n == 3:
+            x = 'G3'
+        elif n == 4:
+            x = 'T'
+        if not game.show_possible_move(x):
+            pass
+        else:
+            game.get_animal(x).move(game.show_possible_move(x), game.get_board())
+            game.get_board().show()
+            print(game.goat_is_safe(x))
 
 
 if __name__ == '__main__':
