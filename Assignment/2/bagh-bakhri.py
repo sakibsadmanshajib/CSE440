@@ -18,17 +18,8 @@ board = {
     'C4': ['B3', 'A4']
 }
 
-class Board(object):
 
-    class Enumerate(Enum):
-        A0 = 1
-        A2 = 2
-        A4 = 3
-        B1 = 4
-        B3 = 5
-        C0 = 6
-        C2 = 7
-        C4 = 8
+class Board(object):
 
     A0 = 'X'
     A2 = 'X'
@@ -44,9 +35,12 @@ class Board(object):
         self.B1 = g2.get_name()
         self.B3 = t.get_name()
         self.C0 = g3.get_name()
-    
+
     def is_empty(self, pos):
-        pass
+        if self.get(pos) == 'X':
+            return True
+        else:
+            return False
 
     def get(self, pos):
         if pos == 'A0':
@@ -57,32 +51,32 @@ class Board(object):
             return self.A4
         elif pos == 'B1':
             return self.B1
-        elif pos== 'B3':
+        elif pos == 'B3':
             return self.B3
-        elif pos== 'C0':
+        elif pos == 'C0':
             return self.C0
-        elif pos== 'C2':
+        elif pos == 'C2':
             return self.C2
-        elif pos== 'C3':
+        elif pos == 'C3':
             return self.C4
 
     def set(self, pos, name):
         if pos == 'AO':
             self.A0 = name
         elif pos == 'A2':
-            self.A2=name
+            self.A2 = name
         elif pos == 'A4':
-            self.A4=name
+            self.A4 = name
         elif pos == 'B1':
-            self.B1=name
-        elif pos== 'B3':
-            self.B3=name
-        elif pos== 'C0':
-            self.C0=name
-        elif pos== 'C2':
-            self.C2=name
-        elif pos== 'C3':
-            self.C4=name
+            self.B1 = name
+        elif pos == 'B3':
+            self.B3 = name
+        elif pos == 'C0':
+            self.C0 = name
+        elif pos == 'C2':
+            self.C2 = name
+        elif pos == 'C3':
+            self.C4 = name
 
     def show(self):
         str = """
@@ -92,20 +86,16 @@ class Board(object):
         | // | \\\ | // | \\\ |
         {5}         {6}         {7}
         """
-        print(str.format(self.A0, self.A2, self.A4, self.B1, self.B3, self.C0, self.C2, self.C4))
+        print(str.format(self.A0, self.A2, self.A4,
+                         self.B1, self.B3, self.C0, self.C2, self.C4))
 
     # def getNeighbour(self, board, current_pos):
 
-
     #     if(current_pos=='A0' or 'A2' or 'A4' or 'B1' or 'B3' or 'C0' or 'C2' or 'C3'):
     #         return board[current_pos]
-        
+
     #     else:
     #         print("Invalid Move")
-
-
-        
-
 
 
 # class Handler:
@@ -125,7 +115,7 @@ class Board(object):
     #     if objct.name is 'Tiger':
     #          objct.setPosition (self.tigerPos)
     #     elif objct.name is 'Goat1':
-    #         objct.setPosition(self.g1Pos) 
+    #         objct.setPosition(self.g1Pos)
     #     elif objct.name is 'Goat2':
     #         objct.setPosition(self.g2Pos)
     #     elif  objct.name is 'Goat3':
@@ -140,12 +130,12 @@ class Animal(object):
     def __init__(self, name, pos):
         self.name = name
         self.position = pos
-    
+
     def valid_moves(self):
-        possible_moves = board[position]
-        for _ in board[position]:
-            pass 
-        return board[position]
+        possible_moves = board[self.position]
+        for _ in board[self.position]:
+            pass
+        return board[self.position]
 
     def get_name(self):
         return self.name
@@ -153,16 +143,22 @@ class Animal(object):
     def get_position(self):
         return self.position
 
-    def set_position(self,pos):
-        self.position=pos
+    def set_position(self, pos):
+        self.position = pos
 
-    def move(self, nextpos):
+    def move(self, nextpos, board):
         self.position = nextpos
+        board.set(position, 'X')
+
 
 class Goat(Animal):
 
     status = 'Alive'
     active = False
+
+    def __init__(self, pos, nm):
+        self.position = pos
+        self.name = nm
 
     # def move(self, nextpos):
     #     possibleMoves = graph[self.position]
@@ -175,16 +171,14 @@ class Goat(Animal):
 
     def has_backup(self):
         pass
-    
-    def setActive(self,state):
-        if(state==0):
-            active = False
-        else:
-            active=True
-    
-    def get_active():
-        return active
-        
+
+    def set_active(self, state):
+        self.active = state
+
+    def get_active(self):
+        return self.active
+
+
 class Tiger(Animal):
 
     status = 'Free'
@@ -197,7 +191,7 @@ class Tiger(Animal):
     #     else:
     #         print("Not possible.")
     #         return False
-    
+
 
 # class gameDashboard:
 #     tiger = Tiger("Tiger","D")
@@ -205,52 +199,53 @@ class Tiger(Animal):
 #     g2 = Goat("Goat2","B")
 #     g3 = Goat("Goat3","C")
 #     h = Handler(tiger,g1,g2,g3)
-   
-class Game(object,Goat,Tiger):
 
-    g1 = Goat('A0') 
-    g2 = Goat('B3')
-    g3 = Goat('A4')
-    t = Tiger('B1')
-    bd=Board()
-    def __init__(self):
-     pass 
+class Game(object):
 
-    def goat_move_is_valid(self,next_move):
-        if(g1.getPosition()==next_move):
-            return False
-        elif (g2.getPosition()==next_move):
-            return False
-        elif (g3.getPosition() == next_move):
-            return False
-        elif (t.getPosition()== next_move):
-            return False
-        else:
-            return True
-    
-    def goat_is_safe(self):
-        tiger_pos=t.getPosition()
+    g1 = Goat('A0', 'G1')
+    g2 = Goat('B1', 'G2')
+    g3 = Goat('A4', 'G3')
+    t = Tiger('B3', 'T')
+    bd = Board(g1, g2, g3, t)
+    bd.show()
 
-        if(p1==g1.getPosition):
-            
-            return True
+    # def __init__(self):
+    #  pass
+
+    # def goat_move_is_valid(self,next_move):
+    #     if(g1.get_position()==next_move):
+    #         return False
+    #     elif (g2.get_position()==next_move):
+    #         return False
+    #     elif (g3.get_position() == next_move):
+    #         return False
+    #     elif (t.get_position()== next_move):
+    #         return False
+    #     else:
+    #         return True
+
+    # def goat_is_safe(self):
+    #     tiger_pos=t.get_position()
+
+    #     if(p1==g1.get_position):
+
+    #         return True
 
     def show_possible_move(an):
         count = 0
-    
+
     print("Possible Moves of " + an.get_name + ":")
     for _ in an.valid_moves():
         print(str(count) + ": " + _)
         count += 1
     print("Please enter a number from above: ")
     return an.valid_moves[int(input())]
-    
+
 
 def main():
-    bd = Board()
-    bd.show()
+    # bd = Board()
+    # bd.show()
 
-    
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
