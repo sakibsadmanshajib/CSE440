@@ -250,15 +250,21 @@ class Game(object):
         for _ in res:
             print(str(count) + ": " + _)
             count += 1
+
         print("Please enter a number from above: ")
-        return anm.valid_moves[int(input())]
+        return res[int(input())]
+    
+    def get_board(self):
+        return self.bd
 
 
 def main():
     # bd = Board()
     # bd.show()
     game = Game()
-    game.show_possible_move('G2')
+    
+    game.get_animal('G2').move(game.show_possible_move('G2'), game.get_board())
+    game.get_board().show()
 
 
 if __name__ == '__main__':
