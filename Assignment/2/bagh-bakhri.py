@@ -1,3 +1,5 @@
+from enum import Enum
+
 board = {
     'A0': ['B1', 'C0'],
     'A1': None,
@@ -17,6 +19,17 @@ board = {
 }
 
 class Board(object):
+
+    class Enumerate(Enum):
+        A0 = 1
+        A2 = 2
+        A4 = 3
+        B1 = 4
+        B3 = 5
+        C0 = 6
+        C2 = 7
+        C4 = 8
+
     A0 = 'X'
     A2 = 'X'
     A4 = 'X'
@@ -26,59 +39,26 @@ class Board(object):
     C2 = 'X'
     C4 = 'X'
 
-    def __init__(self):
-        self.A0 = 'G'
-        self.B1 = 'G'
-        self.B3 = 'T'
-        self.C0 = 'G'
-
-    def get_A0(self):
-        return self.A0
-
-    def get_A2(self):
-        return self.A2
+    def __init__(self, g1, g2, g3, t):
+        self.A0 = g1.get_name()
+        self.B1 = g2.get_name()
+        self.B3 = t.get_name()
+        self.C0 = g3.get_name()
     
-    def get_A4(self):
-        return self.A4
+    def is_empty(self, pos):
+        pass
 
-    def get_B1(self):
-        return self.B1
-
-    def get_B3(self):
-        return self.B3
-
-    def get_C0(self):
-        return self.C0
-
-    def get_C2(self):
-        return self.C2
-
-    def get_C4(self):
-        return self.C4
-
-    def set_A0(self,p):
-        self.A0=p
-
-    def set_A2(self,p):
-        self.A2=p
-
-    def set_A4(self,p):
-        self.A4=p
-    
-    def set_B1(self,p):
-        self.B1=p
-    
-    def set_B3(self,p):
-        self.B3=p
-
-    def set_C0(self,p):
-        self.C0=p
-
-    def set_C2(self,p):
-        self.C2=p
-    
-    def set_C4(self,p):
-        self.C4=p
+    def get(self, pos):
+        if pos == 'A0':
+            return self.A0
+        elif pos == 'A2':
+            return self.A2
+        elif pos == 'A4':
+            return self.A4
+        elif pos == 'B1':
+            return self.B1
+        else:
+            return None
 
     def show(self):
         str = """
@@ -90,12 +70,14 @@ class Board(object):
         """
         print(str.format(self.A0, self.A2, self.A4, self.B1, self.B3, self.C0, self.C2, self.C4))
 
-    def getNeighbour(self, board,current_pos):
-        if(current_pos=='A0' or 'A2' or 'A4' or 'B1' or 'B3' or 'C0' or 'C2' or 'C3'):
-            return board[current_pos]
+    # def getNeighbour(self, board, current_pos):
+
+
+    #     if(current_pos=='A0' or 'A2' or 'A4' or 'B1' or 'B3' or 'C0' or 'C2' or 'C3'):
+    #         return board[current_pos]
         
-        else:
-            print("Invalid Move")
+    #     else:
+    #         print("Invalid Move")
 
 
         
@@ -124,16 +106,39 @@ class Board(object):
     #         objct.setPosition(self.g2Pos)
     #     elif  objct.name is 'Goat3':
     #         objct.setPosition(self.g3Pos)
-    
-class Goat:
-    #name = ''
+
+class Animal(object):
+
+    name = ''
     position = ''
+    status = ''
+
+    def __init__(self, name, pos):
+        self.name = name
+        self.position = pos
+    
+    def valid_moves(self):
+        possible_moves = board[position]
+        for _ in board[position]:
+            pass 
+        return board[position]
+
+    def get_name(self):
+        return self.name
+
+    def get_position(self):
+        return self.position
+
+    def set_position(self,pos):
+        self.position=pos
+
+    def move(self, nextpos):
+        self.position = nextpos
+
+class Goat(Animal):
+
     status = 'Alive'
     active = False
-
-    def __init__(self, pos):
-        self.position = pos
-
 
     # def move(self, nextpos):
     #     possibleMoves = graph[self.position]
@@ -144,14 +149,8 @@ class Goat:
     #         print("Not possible.")
     #         return False
 
-    def getPosition(self):
-        return self.position
-
-    def hasBackup(self):
+    def has_backup(self):
         pass
-
-    def setPosition(self,pos):
-        self.position=pos
     
     def setActive(self,state):
         if(state==0):
@@ -162,30 +161,18 @@ class Goat:
     def get_active():
         return active
         
-class Tiger:
+class Tiger(Animal):
 
-    position = ''
     status = 'Free'
 
-    def __init__(self, pos):
-        #self.name = name
-        self.position = pos
-
-    def move(self, nextpos):
-        possibleMoves = #graph[self.position]
-        if nextpos in possibleMoves:
-            self.position = nextpos
-            return True
-        else:
-            print("Not possible.")
-            return False
-
-    def getPosition(self):
-        return self.position
-    
-    def setPosition(self,pos):
-        self.position = pos
-
+    # def move(self, nextpos):
+    #     possibleMoves = #graph[self.position]
+    #     if nextpos in possibleMoves:
+    #         self.position = nextpos
+    #         return True
+    #     else:
+    #         print("Not possible.")
+    #         return False
     
 
 # class gameDashboard:
@@ -224,6 +211,22 @@ class Game(object,Goat,Tiger):
             
             return True
 
-bd = Board()
-bd.show()
+def show_possible_move(an):
+    count = 0
+    
+    print("Possible Moves of " + an.get_name + ":")
+    for _ in an.valid_moves():
+        print(str(count) + ": " + _)
+        count += 1
+    print("Please enter a number from above: ")
+    return an.valid_moves[int(input())]
+    
 
+def main():
+    bd = Board()
+    bd.show()
+
+    
+
+if __name__=='__main__':
+    main()
