@@ -1,13 +1,23 @@
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'C'],
-    'C': ['A', 'B', 'D', 'E'],
-    'D': ['C', 'E', 'F'],
-    'E': ['C', 'D', 'F'],
-    'F': ['D', 'E', 'G', 'H'],
-    'G': ['F', 'H'],
-    'H': ['F', 'G']
+board = {
+    'A0': ['B1', 'C0'],
+    'A1': None,
+    'A2': ['B1', 'C2', 'B3'],
+    'A3': None,
+    'A4': ['B3', 'C4'],
+    'B0': None,
+    'B1': ['A0', 'A2', 'C0', 'C2'],
+    'B2': None,
+    'B3': ['A2', 'C2', 'C4', 'A4'],
+    'B4': None,
+    'C0': ['A0', 'B1'],
+    'C1': None,
+    'C2': ['B1', 'A2', 'B3'],
+    'C3': None,
+    'C4': ['B3', 'A4']
 }
+
+class Board(object):
+    pass
 
 class Handler:
     tigerPos = ''
