@@ -57,8 +57,32 @@ class Board(object):
             return self.A4
         elif pos == 'B1':
             return self.B1
-        else:
-            return None
+        elif pos== 'B3':
+            return self.B3
+        elif pos== 'C0':
+            return self.C0
+        elif pos== 'C2':
+            return self.C2
+        elif pos== 'C3':
+            return self.C4
+
+    def set(self, pos, name):
+        if pos == 'AO':
+            self.A0 = name
+        elif pos == 'A2':
+            self.A2=name
+        elif pos == 'A4':
+            self.A4=name
+        elif pos == 'B1':
+            self.B1=name
+        elif pos== 'B3':
+            self.B3=name
+        elif pos== 'C0':
+            self.C0=name
+        elif pos== 'C2':
+            self.C2=name
+        elif pos== 'C3':
+            self.C4=name
 
     def show(self):
         str = """
@@ -211,8 +235,8 @@ class Game(object,Goat,Tiger):
             
             return True
 
-def show_possible_move(an):
-    count = 0
+    def show_possible_move(an):
+        count = 0
     
     print("Possible Moves of " + an.get_name + ":")
     for _ in an.valid_moves():
