@@ -21,23 +21,17 @@ board = {
 
 class Board(object):
 
-    A0 = 'X'
-    A2 = 'X'
-    A4 = 'X'
-    B1 = 'X'
-    B3 = 'X'
-    C0 = 'X'
-    C2 = 'X'
-    C4 = 'X'
-
-    def __init__(self, g1, g2, g3, t):
-        self.A0 = g1.get_name()
-        self.B1 = g2.get_name()
-        self.B3 = t.get_name()
-        self.C0 = g3.get_name()
+    A0 = 'A0'
+    A2 = 'A2'
+    A4 = 'A4'
+    B1 = 'B1'
+    B3 = 'B3'
+    C0 = 'C0'
+    C2 = 'C2'
+    C4 = 'C4'
 
     def is_empty(self, pos):
-        if self.get(pos) == 'X':
+        if self.get(pos) != 'G1' or 'G2' or 'G3' or 'T':
             return True
         else:
             return False
@@ -61,7 +55,7 @@ class Board(object):
             return self.C4
 
     def set(self, pos, name):
-        if pos == 'AO':
+        if pos == 'A0':
             self.A0 = name
         elif pos == 'A2':
             self.A2 = name
@@ -127,9 +121,9 @@ class Animal(object):
     position = ''
     status = ''
 
-    def __init__(self, name, pos):
+    def __init__(self, pos, name, board):
         self.name = name
-        self.position = pos
+        self.set_position(pos, board)
 
     def valid_moves(self):
         possible_moves = board[self.position]
@@ -143,22 +137,19 @@ class Animal(object):
     def get_position(self):
         return self.position
 
-    def set_position(self, pos):
+    def set_position(self, pos, board):
         self.position = pos
+        board.set(self.position, self.name)
 
     def move(self, nextpos, board):
-        self.position = nextpos
-        board.set(position, 'X')
+        board.set(self.position, self.position)
+        self.set_position(nextpos, board)
 
 
 class Goat(Animal):
 
     status = 'Alive'
     active = False
-
-    def __init__(self, pos, nm):
-        self.position = pos
-        self.name = nm
 
     # def move(self, nextpos):
     #     possibleMoves = graph[self.position]
@@ -202,15 +193,13 @@ class Tiger(Animal):
 
 class Game(object):
 
-    g1 = Goat('A0', 'G1')
-    g2 = Goat('B1', 'G2')
-    g3 = Goat('A4', 'G3')
-    t = Tiger('B3', 'T')
-    bd = Board(g1, g2, g3, t)
+    bd = Board()
     bd.show()
-
-    # def __init__(self):
-    #  pass
+    g1 = Goat('A0', 'G1', bd)
+    g2 = Goat('B1', 'G2', bd)
+    g3 = Goat('C0', 'G3', bd)
+    t = Tiger('B3', 'T', bd)
+    bd.show()
 
     # def goat_move_is_valid(self,next_move):
     #     if(g1.get_position()==next_move):
@@ -230,21 +219,46 @@ class Game(object):
     #     if(p1==g1.get_position):
 
     #         return True
+    def get_animal(self, name):
+        if name == 'G1':
+            return self.g1
+        elif name == 'G2':
+            return self.g2
+        elif name == 'G3':
+            return self.g3
+        elif name == 'T':
+            return self.t
+        else:
+            return None
 
-    def show_possible_move(an):
+    def show_possible_move(self, an):
+        anm = self.get_animal(an)
         count = 0
 
-    print("Possible Moves of " + an.get_name + ":")
-    for _ in an.valid_moves():
-        print(str(count) + ": " + _)
-        count += 1
-    print("Please enter a number from above: ")
-    return an.valid_moves[int(input())]
+        print("Possible Moves of " + anm.get_name() + ":")
+        res = anm.valid_moves()
+
+        if self.g1.get_position() in res:
+            res.remove(self.g1.get_position())
+        if self.g2.get_position() in res:
+            res.remove(self.g2.get_position())
+        if self.g3.get_position() in res:
+            res.remove(self.g3.get_position())
+        if self.t.get_position() in res:
+            res.remove(self.t.get_position())
+
+        for _ in res:
+            print(str(count) + ": " + _)
+            count += 1
+        print("Please enter a number from above: ")
+        return anm.valid_moves[int(input())]
 
 
 def main():
     # bd = Board()
     # bd.show()
+    game = Game()
+    game.show_possible_move('G2')
 
 
 if __name__ == '__main__':
