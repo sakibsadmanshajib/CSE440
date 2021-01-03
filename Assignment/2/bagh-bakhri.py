@@ -2,24 +2,6 @@ from enum import Enum
 import functools
 import operator
 
-_board = {
-    'A0': ['B1', 'C0'],
-    'A1': None,
-    'A2': ['B1', 'C2', 'B3'],
-    'A3': None,
-    'A4': ['B3', 'C4'],
-    'B0': None,
-    'B1': ['A0', 'A2', 'C0', 'C2'],
-    'B2': None,
-    'B3': ['A2', 'C2', 'C4', 'A4'],
-    'B4': None,
-    'C0': ['A0', 'B1'],
-    'C1': None,
-    'C2': ['B1', 'A2', 'B3'],
-    'C3': None,
-    'C4': ['B3', 'A4']
-}
-
 
 class Board(object):
 
@@ -32,8 +14,30 @@ class Board(object):
     C2 = 'C2'
     C4 = 'C4'
 
+    gr_board = {
+        'A0': ['B1', 'C0'],
+        'A1': None,
+        'A2': ['B1', 'C2', 'B3'],
+        'A3': None,
+        'A4': ['B3', 'C4'],
+        'B0': None,
+        'B1': ['A0', 'A2', 'C0', 'C2'],
+        'B2': None,
+        'B3': ['A2', 'C2', 'C4', 'A4'],
+        'B4': None,
+        'C0': ['A0', 'B1'],
+        'C1': None,
+        'C2': ['B1', 'A2', 'B3'],
+        'C3': None,
+        'C4': ['B3', 'A4']
+    }
+
+    def get_gr_board(self, pos):
+        return self.gr_board[pos]
+
     def is_empty(self, pos):
-        if self.get(pos) != 'G1' or 'G2' or 'G3' or 'T':
+        lst_1 = ['G1', 'G2', 'G3', 'T']
+        if self.get(pos) not in lst_1:
             return True
         else:
             return False
@@ -53,7 +57,7 @@ class Board(object):
             return self.C0
         elif pos == 'C2':
             return self.C2
-        elif pos == 'C3':
+        elif pos == 'C4':
             return self.C4
 
     def set(self, pos, name):
@@ -71,7 +75,7 @@ class Board(object):
             self.C0 = name
         elif pos == 'C2':
             self.C2 = name
-        elif pos == 'C3':
+        elif pos == 'C4':
             self.C4 = name
 
     def show(self):
@@ -90,15 +94,15 @@ class Animal(object):
     name = ''
     position = ''
     status = ''
-    animal = ''
+    type = ''
 
-    def __init__(self, pos, name, board, animal):
+    def __init__(self, pos, name, board, type):
         self.name = name
         self.set_position(pos, board)
-        self.animal = animal
+        self.type = type
 
-    def valid_moves(self):
-        return _board[self.position]
+    def valid_moves(self, board):
+        return board.get_gr_board(self.position)
 
     def get_name(self):
         return self.name
@@ -113,6 +117,9 @@ class Animal(object):
     def move(self, nextpos, board):
         board.set(self.position, self.position)
         self.set_position(nextpos, board)
+
+    def get_type(self):
+        return self.type
 
 
 class Goat(Animal):
@@ -164,33 +171,47 @@ class Game(object):
 
     def goat_is_safe(self, g):
         self_animal = self.get_animal(g)
-        f_depth = _board[self_animal.get_position()]
-        s_depth = []
-        for l in f_depth:
-            s_depth.append(_board[l])
+        
+        f_depth = self.bd.get_gr_board(self_animal.get_position())
+        print(f_depth)
 
-        s_depth_flat = functools.reduce(operator.iconcat, s_depth, [])
-
-        self_animal = self.get_animal(g)
-        for y in s_depth_flat:
-            if y == self_animal.get_position():
-                s_depth_flat.remove(y)
-        print(s_depth_flat)
-        if self.g1.get_position() in s_depth_flat:
-            return False
-        if self.g2.get_position() in s_depth_flat:
-            return False
-        if self.g3.get_position() in s_depth_flat:
-            return False
+        if self_animal.get_type() == 'Goat':
+            if self.g1.get_position() in f_depth:
+                print(self.g1.get_position())
+                return True
+            elif self.g2.get_position() in f_depth:
+                print(self.g2.get_position())
+                return True
+            elif self.g3.get_position() in f_depth:
+                print(self.g3.get_position())
+                return True
+            else:
+                print("None")
+                return False
         else:
-            return True
+            print("Tiger")
+            return False
+
+    def kill(self):
+        return False
+
+    def minmax(self):
+        # if a leaf node is reached, return the score
+        # find the minimum attainable value for the minimizer
+            # first make the move
+            # go deeper in the search tree recursively
+            # then revert the move
+        # find the maximum attainable value for the maximizer
+            # first make the move
+            # go deeper in the search tree recursively
+            # then revert the move
+        pass
 
     def show_possible_move(self, an):
         anm = self.get_animal(an)
         count = 0
 
-        print("Possible Moves of " + anm.get_name() + ":")
-        res = anm.valid_moves()
+        res = anm.valid_moves(self.bd)
 
         if self.g1.get_position() in res:
             res.remove(self.g1.get_position())
@@ -205,8 +226,8 @@ class Game(object):
             for _ in res:
                 print(str(count) + ": " + _)
                 count += 1
-            print("Please enter a number from above: ")
-            return res[int(input())]
+            q = int(input("Please enter a number from above: "))
+            return res[q]
         else:
             print("No possible moves for " + anm.get_name() + ".")
             return None
@@ -218,7 +239,8 @@ class Game(object):
 def main():
 
     game = Game()
-    while True:
+    print(game.get_board().get_gr_board('B1'))
+    while not game.kill():
         
         print("""
 Enter Animal: 
@@ -237,13 +259,17 @@ Enter Animal:
             x = 'G3'
         elif n == 4:
             x = 'T'
-        if not game.show_possible_move(x):
-            pass
-        else:
-            game.get_animal(x).move(game.show_possible_move(x), game.get_board())
+        print(game.get_board().get_gr_board('B1'))
+        s = game.show_possible_move(x)
+        if s:
+            print(game.get_board().get_gr_board('B1'))
+            game.get_animal(x).move(s, game.get_board())
             game.get_board().show()
             print(game.goat_is_safe(x))
-
+        else:
+            print(game.get_board().get_gr_board('B1'))
+            pass
+            
 
 if __name__ == '__main__':
     main()
