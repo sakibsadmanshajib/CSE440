@@ -171,26 +171,40 @@ class Game(object):
 
     def goat_is_safe(self, g):
         self_animal = self.get_animal(g)
-        
-        f_depth = self.bd.get_gr_board(self_animal.get_position())
-        print(f_depth)
 
-        if self_animal.get_type() == 'Goat':
-            if self.g1.get_position() in f_depth:
-                print(self.g1.get_position())
+        _safe_connections={ 'A0':['C0','A2','B1'], 'C0':['A0','B1','C2'],'B1':['A0','A2','C2','C0'],
+                            'A2':['C2','A4','B3','A0'],'C2':['B3','C4','A2','C0'],'B3':['A2','C2','A4','C4'],
+                            'A4':['B3','A2','C4'],'C4':['A4','B3','C2']
+        }
+        safe_coord=_safe_connections[self_animal.get_position()]
+        print(safe_coord)
+        for pos in safe_coord:
+            if pos == self.g1.get_position():
                 return True
-            elif self.g2.get_position() in f_depth:
-                print(self.g2.get_position())
+            elif pos == self.g2.get_position():
                 return True
-            elif self.g3.get_position() in f_depth:
-                print(self.g3.get_position())
+            elif pos == self.g3.get_position():
                 return True
-            else:
-                print("None")
-                return False
-        else:
-            print("Tiger")
-            return False
+        return False
+        # f_depth = self.bd.get_gr_board(self_animal.get_position())
+        # print(f_depth)
+
+        # if self_animal.get_type() == 'Goat':
+        #     if self.g1.get_position() in f_depth:
+        #         print(self.g1.get_position())
+        #         return True
+        #     elif self.g2.get_position() in f_depth:
+        #         print(self.g2.get_position())
+        #         return True
+        #     elif self.g3.get_position() in f_depth:
+        #         print(self.g3.get_position())
+        #         return True
+        #     else:
+        #         print("None")
+        #         return False
+        # else:
+        #     print("Tiger")
+        #     return False
 
     def kill(self):
         return False
@@ -259,10 +273,10 @@ Enter Animal:
             x = 'G3'
         elif n == 4:
             x = 'T'
-        print(game.get_board().get_gr_board('B1'))
+        # print(game.get_board().get_gr_board('B1'))
         s = game.show_possible_move(x)
         if s:
-            print(game.get_board().get_gr_board('B1'))
+            #print(game.get_board().get_gr_board('B1'))
             game.get_animal(x).move(s, game.get_board())
             game.get_board().show()
             print(game.goat_is_safe(x))
