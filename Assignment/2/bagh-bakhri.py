@@ -130,11 +130,15 @@ class Goat(Animal):
     status = 'Alive'
     active = False
 
+    def activate(self):
+        active = True
+
+    def set_status(self,s):
+        self.status=s
+
     def has_backup(self):
         pass
 
-    def set_active(self, state):
-        self.active = state
 
     def get_active(self):
         return self.active
@@ -207,7 +211,32 @@ class Game(object):
         #     return False
 
     def kill(self):
-        return False
+        tiger_pos=self.t.get_position()
+        possible_goat_pos=self.bd.get_gr_board(tiger_pos)
+        print()
+        for pos in possible_goat_pos:
+            if pos == self.g1.get_position():
+                if not self.goat_is_safe(self.get_animal(self.g1)):
+                    self.g1.set_status('Dead')
+                    next_pos = self.g1.get_position()
+                    self.g1.set_position(None,self.bd)
+                    self.t.move(next_pos,self.bd)
+                    return True
+                    
+            elif pos == self.g2.get_position():
+                if not self.goat_is_safe(self.get_animal(self.g2)):
+                    self.g2.set_status('Dead')
+                    next_pos = self.g2.get_position()
+                    self.g2.set_position(None,self.bd) 
+                    self.t.move(next_pos,self.bd)
+                    return True
+            elif pos == self.g3.get_position():
+                if not self.goat_is_safe(self.get_animal(self.g3)):
+                    self.g3.set_status('Dead')
+                    next_pos = self.g3.get_position()
+                    self.g3.set_position(None,self.bd)
+                    self.t.move(next_pos,self.bd)
+                    return True
 
     def minmax(self):
         # if a leaf node is reached, return the score
@@ -281,9 +310,9 @@ Enter Animal:
             game.get_board().show()
             print(game.goat_is_safe(x))
         else:
-            print(game.get_board().get_gr_board('B1'))
+            # print(game.get_board().get_gr_board('B1'))
             pass
-            
+
 
 if __name__ == '__main__':
     main()
