@@ -89,6 +89,7 @@ class Board(object):
         print(str.format(self.A0, self.A2, self.A4,
                          self.B1, self.B3, self.C0, self.C2, self.C4))
 
+
 class Animal(object):
 
     name = ''
@@ -131,14 +132,13 @@ class Goat(Animal):
     active = False
 
     def activate(self):
-        active = True
+        self.active = True
 
-    def set_status(self,s):
-        self.status=s
+    def set_status(self, s):
+        self.status = s
 
     def has_backup(self):
         pass
-
 
     def get_active(self):
         return self.active
@@ -150,6 +150,7 @@ class Tiger(Animal):
         super().__init__(pos, name, board, 'Tiger')
 
     status = 'Free'
+
 
 class Game(object):
 
@@ -176,11 +177,11 @@ class Game(object):
     def goat_is_safe(self, g):
         self_animal = self.get_animal(g)
 
-        _safe_connections={ 'A0':['C0','A2','B1'], 'C0':['A0','B1','C2'],'B1':['A0','A2','C2','C0'],
-                            'A2':['C2','A4','B3','A0'],'C2':['B3','C4','A2','C0'],'B3':['A2','C2','A4','C4'],
-                            'A4':['B3','A2','C4'],'C4':['A4','B3','C2']
-        }
-        safe_coord=_safe_connections[self_animal.get_position()]
+        _safe_connections = {'A0': ['C0', 'A2', 'B1'], 'C0': ['A0', 'B1', 'C2'], 'B1': ['A0', 'A2', 'C2', 'C0'],
+                             'A2': ['C2', 'A4', 'B3', 'A0'], 'C2': ['B3', 'C4', 'A2', 'C0'], 'B3': ['A2', 'C2', 'A4', 'C4'],
+                             'A4': ['B3', 'A2', 'C4'], 'C4': ['A4', 'B3', 'C2']
+                             }
+        safe_coord = _safe_connections[self_animal.get_position()]
         print(safe_coord)
         for pos in safe_coord:
             if pos == self.g1.get_position():
@@ -211,43 +212,45 @@ class Game(object):
         #     return False
 
     def kill(self):
-        tiger_pos=self.t.get_position()
-        possible_goat_pos=self.bd.get_gr_board(tiger_pos)
+        tiger_pos = self.t.get_position()
+        possible_goat_pos = self.bd.get_gr_board(tiger_pos)
         print()
         for pos in possible_goat_pos:
             if pos == self.g1.get_position():
-                if not self.goat_is_safe(self.get_animal(self.g1)):
+                if not self.goat_is_safe('G1'):
                     self.g1.set_status('Dead')
                     next_pos = self.g1.get_position()
-                    self.g1.set_position(None,self.bd)
-                    self.t.move(next_pos,self.bd)
+                    self.g1.set_position(None, self.bd)
+                    self.t.move(next_pos, self.bd)
                     return True
-                    
+
             elif pos == self.g2.get_position():
-                if not self.goat_is_safe(self.get_animal(self.g2)):
+                if not self.goat_is_safe('G2'):
                     self.g2.set_status('Dead')
                     next_pos = self.g2.get_position()
-                    self.g2.set_position(None,self.bd) 
-                    self.t.move(next_pos,self.bd)
+                    self.g2.set_position(None, self.bd)
+                    self.t.move(next_pos, self.bd)
                     return True
             elif pos == self.g3.get_position():
-                if not self.goat_is_safe(self.get_animal(self.g3)):
+                if not self.goat_is_safe('G3'):
                     self.g3.set_status('Dead')
                     next_pos = self.g3.get_position()
-                    self.g3.set_position(None,self.bd)
-                    self.t.move(next_pos,self.bd)
+                    self.g3.set_position(None, self.bd)
+                    self.t.move(next_pos, self.bd)
                     return True
+        
+        return False
 
     def minmax(self):
         # if a leaf node is reached, return the score
         # find the minimum attainable value for the minimizer
-            # first make the move
-            # go deeper in the search tree recursively
-            # then revert the move
+        # first make the move
+        # go deeper in the search tree recursively
+        # then revert the move
         # find the maximum attainable value for the maximizer
-            # first make the move
-            # go deeper in the search tree recursively
-            # then revert the move
+        # first make the move
+        # go deeper in the search tree recursively
+        # then revert the move
         pass
 
     def show_possible_move(self, an):
@@ -284,7 +287,7 @@ def main():
     game = Game()
     print(game.get_board().get_gr_board('B1'))
     while not game.kill():
-        
+
         print("""
 Enter Animal: 
 1: G1
@@ -305,7 +308,7 @@ Enter Animal:
         # print(game.get_board().get_gr_board('B1'))
         s = game.show_possible_move(x)
         if s:
-            #print(game.get_board().get_gr_board('B1'))
+            # print(game.get_board().get_gr_board('B1'))
             game.get_animal(x).move(s, game.get_board())
             game.get_board().show()
             print(game.goat_is_safe(x))
